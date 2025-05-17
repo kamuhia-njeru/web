@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Crypto Trading Market</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body, html {
+      height: 100%;
+      color: #0c0b0b;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    
+    .background-container video {
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 12, 12, 0.85);
+      padding: 10px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .logo-title {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo-title video {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+    }
+    
+    .logo-title h1 {
+      font-size: 28px;
+      font-weight: bold;
+      color: #2e7d32;
+      cursor: pointer;
+    }
+    
+    .nav {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .nav a {
+      color: #2e7d32;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    
+    .nav a:hover {
+      background: rgba(232, 245, 233, 0.7);
+    }
+    
+    .section {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.8);
+      margin: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
+      backdrop-filter: blur(2px);
+      transition: all 0.3s ease;
+    }
+    
+    .section:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .section-header h2 {
+      color: #2e7d32;
+    }
+    
+    .settings-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding-bottom: 60px; /* Add padding to prevent footer overlap */
+    }
+    
+    .settings-card {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .settings-card h3 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(46, 125, 50, 0.3);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .form-group input, 
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    .btn {
+      padding: 12px 20px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: #2e7d32;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1b5e20;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #2e7d32;
+      color: #2e7d32;
+    }
+    
+    .btn-outline:hover {
+      background: rgba(46, 125, 50, 0.1);
+    }
+    
+    .security-notice {
+      background: rgba(46, 125, 50, 0.1);
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+      border-left: 4px solid #2e7d32;
+    }
+    
+    .status {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .status-success {
+      background: rgba(46, 125, 50, 0.2);
+      color: #2e7d32;
+    }
+    
+    .status-warning {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffa000;
+    }
+    
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      overflow-y: auto;
+    }
+    
+    .modal-content {
+      background: rgba(255,255,255,0.95);
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    
+    .close-modal {
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #2e7d32;
+    }
+    
+    /* Success message */
+    .success-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      z-index: 1001;
+      text-align: center;
+      display: none;
+      max-width: 400px;
+    }
+    
+    .success-message h3 {
+      color: #2e7d32;
+      margin-bottom: 15px;
+    }
+    
+    .success-message p {
+      margin-bottom: 20px;
+    }
+    
+    .success-message button {
+      padding: 10px 20px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    /* Error message */
+    .error-message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #c62828;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 1001;
+      display: none;
+      animation: fadeInOut 3s ease-in-out;
+    }
+    
+    @keyframes fadeInOut {
+      0% { opacity: 0; top: 0; }
+      10% { opacity: 1; top: 20px; }
+      90% { opacity: 1; top: 20px; }
+      100% { opacity: 0; top: 0; }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .settings-container {
+        padding: 0 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-container">
+    <video autoplay muted loop playsinline>
+      <source src="https://dl.dropboxusercontent.com/scl/fi/grduhrszolyx2ipyvjm64/Logo.mp4?rlkey=z9xijvc8x9cpjs7o2dq3r533b&st=iuyj95p2" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- Error Message -->
+  <div class="error-message" id="errorMessage"></div>
+
+  <header>
+    <div class="logo-title">
+      <video autoplay muted loop>
+        <source src="https://dl.dropboxusercontent.com/scl/fi/grduhrszolyx2ipyvjm64/Logo.mp4?rlkey=z9xijvc8x9cpjs7o2dq3r533b&st=iuyj95p2" type="video/mp4">
+      </video>
+      <h1 onclick="window.location.href='index.html'">Crypto Trading Market</h1>
+    </div>
+    <div class="nav">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="Index.html">Home</a>
+      <a href="account.html">Account</a>
+      <a href="settings.html" style="background: rgba(232, 245, 233, 0.3);">Settings</a>
+      <a href="javascript:void(0)" onclick="logoutUser()">Logout</a>
+    </div>
+  </header>
+
+  <div class="settings-container">
+    <!-- Account Settings Card -->
+    <div class="settings-card">
+      <h3>Account Settings</h3>
+      
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="userEmail" value="user@example.com" readonly>
+      </div>
+      
+      <div class="form-group">
+        <label>Account Status</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="status status-success">Verified</span>
+          <span style="font-size: 0.9rem; color: #666;">Last login: <span id="lastLogin">Today at 14:30</span></span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label>Account Creation Date</label>
+        <input type="text" id="accountCreated" value="May 15, 2025" readonly>
+      </div>
+      
+      <div class="security-notice">
+        <h4>Security Notice</h4>
+        <p>For your security, please ensure your account information is kept up to date and never share your password with anyone.</p>
+      </div>
+    </div>
+    
+    <!-- Password Change Card -->
+    <div class="settings-card">
+      <h3>Change Password</h3>
+      
+      <div class="form-group">
+        <label>Current Password</label>
+        <input type="password" id="currentPassword" placeholder="Enter your current password">
+      </div>
+      
+      <div class="form-group">
+        <label>New Password</label>
+        <input type="password" id="newPassword" placeholder="Enter your new password">
+      </div>
+      
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input type="password" id="confirmPassword" placeholder="Confirm your new password">
+      </div>
+      
+      <div class="form-group">
+        <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+      </div>
+      
+      <div style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+        Password requirements: Minimum 8 characters, at least one uppercase letter, one number, and one special character.
+      </div>
+    </div>
+    
+    <!-- Preferences Card -->
+    <div class="settings-card">
+      <h3>Preferences</h3>
+      
+      <div class="form-group">
+        <label>Preferred Currency</label>
+        <select id="preferredCurrency">
+          <option value="USD">US Dollar (USD)</option>
+          <option value="EUR">Euro (EUR)</option>
+          <option value="GBP">British Pound (GBP)</option>
+          <option value="JPY">Japanese Yen (JPY)</option>
+          <option value="BTC">Bitcoin (BTC)</option>
+          <option value="ETH">Ethereum (ETH)</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Language</label>
+        <select id="languagePreference">
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="zh">Chinese</option>
+          <option value="ja">Japanese</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Theme</label>
+        <select id="themePreference">
+          <option value="light">Light Theme</option>
+          <option value="dark">Dark Theme</option>
+          <option value="system">System Default</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="emailNotifications" checked> Email Notifications
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="smsNotifications"> SMS Notifications
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="twoFactorAuth"> Two-Factor Authentication (2FA)
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <button class="btn btn-primary" onclick="savePreferences()">Save Preferences</button>
+      </div>
+    </div>
+    
+    <!-- Advanced Settings Card -->
+    <div class="settings-card">
+      <h3>Advanced Settings</h3>
+      
+      <div class="form-group">
+        <label>API Key</label>
+        <div style="display: flex; gap: 10px;">
+          <input type="text" id="apiKey" value="sk_live_***********" readonly>
+          <button class="btn btn-outline" onclick="regenerateApiKey()">Regenerate</button>
+        </div>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+          Keep your API key secure. Do not share it with anyone.
+        </p>
+      </div>
+      
+      <div class="form-group">
+        <label>Export Account Data</label>
+        <button class="btn btn-outline" onclick="exportAccountData()">Request Data Export</button>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+          You can request a complete export of your account data.
+        </p>
+      </div>
+      
+      <div class="form-group">
+        <label>Delete Account</label>
+        <button class="btn btn-outline" style="color: #c62828; border-color: #c62828;" onclick="showDeleteAccountModal()">Delete Account</button>
+        <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">
+          Warning: This action is irreversible and will permanently delete all your data.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 Crypto Trading Market. All Rights Reserved
+  </footer>
+
+  <!-- Delete Account Modal -->
+  <div id="deleteAccountModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('deleteAccountModal')">&times;</span>
+      <h2>Delete Account</h2>
+      
+      <div style="margin-bottom: 20px;">
+        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+        <p style="color: #c62828; font-weight: bold; margin-top: 10px;">
+          All your data, including transaction history and balances, will be permanently deleted.
+        </p>
+      </div>
+      
+      <div class="form-group">
+        <label>Enter your password to confirm</label>
+        <input type="password" id="deleteAccountPassword" placeholder="Enter your password">
+      </div>
+      
+      <div class="form-group">
+        <button class="btn btn-outline" style="color: #c62828; border-color: #c62828;" onclick="deleteAccount()">Permanently Delete Account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-message" id="successMessage">
+    <h3 id="successTitle">Success!</h3>
+    <p id="successText"></p>
+    <button onclick="closeSuccess()">Continue</button>
+  </div>
+
+  <script>
+    // User state
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+    
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!currentUser) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      // Load user settings
+      loadUserSettings();
+      
+      // Ensure video plays on mobile
+      const videos = document.querySelectorAll('video');
+      videos.forEach(video => {
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.play().catch(e => console.log('Video play prevented:', e));
+      });
+    });
+
+    // Load user settings from localStorage or backend
+    function loadUserSettings() {
+      const userSettings = JSON.parse(localStorage.getItem('userSettings')) || {
+        preferredCurrency: 'USD',
+        language: 'en',
+        theme: 'light',
+        emailNotifications: true,
+        smsNotifications: false,
+        twoFactorAuth: false,
+        lastLogin: new Date().toLocaleString()
+      };
+      
+      // Update form fields
+      document.getElementById('userEmail').value = currentUser?.email || 'user@example.com';
+      document.getElementById('lastLogin').textContent = userSettings.lastLogin;
+      document.getElementById('accountCreated').value = new Date(currentUser?.createdAt || Date.now()).toLocaleDateString();
+      document.getElementById('preferredCurrency').value = userSettings.preferredCurrency;
+      document.getElementById('languagePreference').value = userSettings.language;
+      document.getElementById('themePreference').value = userSettings.theme;
+      document.getElementById('emailNotifications').checked = userSettings.emailNotifications;
+      document.getElementById('smsNotifications').checked = userSettings.smsNotifications;
+      document.getElementById('twoFactorAuth').checked = userSettings.twoFactorAuth;
+    }
+
+    // Change password
+    function changePassword() {
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        showError('Please fill in all password fields');
+        return;
+      }
+      
+      if (newPassword !== confirmPassword) {
+        showError('New passwords do not match');
+        return;
+      }
+      
+      if (newPassword.length < 8) {
+        showError('Password must be at least 8 characters long');
+        return;
+      }
+      
+      if (!/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword) || !/[^A-Za-z0-9]/.test(newPassword)) {
+        showError('Password must contain at least one uppercase letter, one number, and one special character');
+        return;
+      }
+      
+      // In a real app, this would call your Node.js backend to verify current password and update
+      // For demo, we'll simulate a successful password change
+      setTimeout(() => {
+        // Clear password fields
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        
+        showSuccessMessage('Password Changed', 'Your password has been updated successfully.');
+      }, 1000);
+    }
+
+    // Save preferences
+    function savePreferences() {
+      const preferences = {
+        preferredCurrency: document.getElementById('preferredCurrency').value,
+        language: document.getElementById('languagePreference').value,
+        theme: document.getElementById('themePreference').value,
+        emailNotifications: document.getElementById('emailNotifications').checked,
+        smsNotifications: document.getElementById('smsNotifications').checked,
+        twoFactorAuth: document.getElementById('twoFactorAuth').checked,
+        lastLogin: new Date().toLocaleString()
+      };
+      
+      // In a real app, this would call your Node.js backend to save preferences
+      // For demo, we'll save to localStorage
+      localStorage.setItem('userSettings', JSON.stringify(preferences));
+      
+      showSuccessMessage('Preferences Saved', 'Your settings have been updated successfully.');
+      
+      // Apply theme if changed
+      if (preferences.theme === 'dark') {
+        document.body.style.backgroundColor = '#121212';
+        document.body.style.color = '#ffffff';
+      } else if (preferences.theme === 'light') {
+        document.body.style.backgroundColor = '#ffffff';
+        document.body.style.color = '#0c0b0b';
+      }
+    }
+
+    // Regenerate API key
+    function regenerateApiKey() {
+      if (!confirm('Are you sure you want to regenerate your API key? Any applications using the current key will stop working.')) {
+        return;
+      }
+      
+      // Generate a mock API key (in a real app, this would be done server-side)
+      const newApiKey = 'sk_live_' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      document.getElementById('apiKey').value = newApiKey;
+      
+      // In a real app, this would call your Node.js backend to update the API key
+      showSuccessMessage('API Key Regenerated', 'Your new API key has been generated successfully. Update any applications using the previous key.');
+    }
+
+    // Export account data
+    function exportAccountData() {
+      // In a real app, this would call your Node.js backend to prepare data export
+      showSuccessMessage('Export Requested', 'Your account data export has been requested. You will receive an email with download instructions when it is ready.');
+    }
+
+    // Show delete account modal
+    function showDeleteAccountModal() {
+      document.getElementById('deleteAccountModal').style.display = 'block';
+    }
+
+    // Delete account
+    function deleteAccount() {
+      const password = document.getElementById('deleteAccountPassword').value;
+      
+      if (!password) {
+        showError('Please enter your password to confirm');
+        return;
+      }
+      
+      if (!confirm('This will permanently delete your account and all associated data. Are you absolutely sure?')) {
+        return;
+      }
+      
+      // In a real app, this would call your Node.js backend to verify password and delete account
+      // For demo, we'll simulate account deletion
+      setTimeout(() => {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('userSettings');
+        showSuccessMessage('Account Deleted', 'Your account has been permanently deleted. Redirecting to home page...');
+        
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 3000);
+      }, 1000);
+    }
+
+    // Show error message
+    function showError(message) {
+      const errorElement = document.getElementById('errorMessage');
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+      
+      setTimeout(() => {
+        errorElement.style.display = 'none';
+      }, 3000);
+    }
+
+    // Show success message
+    function showSuccessMessage(title, text) {
+      document.getElementById('successTitle').textContent = title;
+      document.getElementById('successText').textContent = text;
+      document.getElementById('successMessage').style.display = 'block';
+    }
+
+    // Close success message
+    function closeSuccess() {
+      document.getElementById('successMessage').style.display = 'none';
+    }
+
+    // Close modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Logout user
+    function logoutUser() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

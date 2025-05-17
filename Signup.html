@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up | Crypto Arbitrage</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    body {
+      background-color: #121212;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .background-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.5;
+    }
+
+    .logo-title-container {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .logo-title-container video {
+      width: 60px;
+      height: auto;
+    }
+
+    .logo-title-container h1 {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #4CAF50;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .signup-wrapper {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+      overflow: auto;
+      flex: 1;
+    }
+
+    .signup-container {
+      background-color: rgba(28, 28, 28, 0.9);
+      padding: 25px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      margin: 60px 0 20px;
+    }
+
+    .signup-container h2 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #07b84b;
+      font-size: 1.3rem;
+    }
+
+    .auth-choice-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .auth-choice-btn {
+      padding: 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .wallet-choice {
+      background-color: #1e90ff;
+      color: white;
+    }
+
+    .normal-choice {
+      background-color: #2a2a2a;
+      color: white;
+      border: 1px solid #444;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      font-size: 0.85rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 12px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background-color: #2a2a2a;
+      color: #fff;
+      font-size: 0.85rem;
+    }
+
+    button {
+      width: 100%;
+      padding: 8px;
+      background-color: #4a98dd;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #1c8e26;
+    }
+
+    .links {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.8rem;
+    }
+
+    .links a {
+      color: #1e90ff;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    .success-message, .error-message {
+      text-align: center;
+      font-size: 0.85rem;
+      display: none;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .success-message {
+      color: #00cc66;
+      background-color: #1a3f2b;
+    }
+
+    .error-message {
+      color: #fff;
+      background-color: #8b0000;
+    }
+
+    /* Wallet buttons styles */
+    .wallet-buttons {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .wallet-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .wallet-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .wallet-btn img {
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+    }
+
+    .metamask-btn {
+      background-color: hsl(227, 54%, 24%);
+      color: white;
+    }
+
+    .trustwallet-btn {
+      background-color: #3375bb;
+      color: white;
+    }
+
+    .binance-btn {
+      background-color: #6f6b66;
+      color: #000;
+    }
+
+    .divider {
+      display: none;
+      align-items: center;
+      margin: 12px 0;
+      color: #666;
+      font-size: 0.8rem;
+    }
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid #444;
+    }
+
+    .divider span {
+      padding: 0 6px;
+    }
+
+    /* Form sections */
+    .wallet-section, .normal-form {
+      display: none;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .logo-title-container h1 {
+        font-size: 1.2rem;
+      }
+
+      .signup-container {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .logo-title-container {
+        top: 10px;
+        left: 10px;
+      }
+      
+      .logo-title-container video {
+        width: 50px;
+      }
+      
+      .logo-title-container h1 {
+        font-size: 1.1rem;
+      }
+
+      .signup-container {
+        padding: 15px;
+        max-width: 340px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      select {
+        padding: 7px;
+        font-size: 0.8rem;
+      }
+
+      button, .wallet-btn {
+        padding: 7px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background-container">
+    <video autoplay muted loop>
+      <source src="https://dl.dropboxusercontent.com/scl/fi/grduhrszolyx2ipyvjm64/Logo.mp4?rlkey=z9xijvc8x9cpjs7o2dq3r533b&st=iuyj95p2" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="logo-title-container">
+    <video autoplay muted loop>
+      <source src="https://dl.dropboxusercontent.com/scl/fi/grduhrszolyx2ipyvjm64/Logo.mp4?rlkey=z9xijvc8x9cpjs7o2dq3r533b&st=iuyj95p2" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <h1 onclick="window.location.href='index.html'">Crypto Trading Market</h1>
+  </div>
+
+  <div class="signup-wrapper">
+    <div class="signup-container">
+      <h2>Create Account</h2>
+      
+      <!-- Initial choice buttons -->
+      <div class="auth-choice-container" id="authChoice">
+        <div class="auth-choice-btn wallet-choice" onclick="showWalletOptions()">
+          Sign Up with Wallet
+        </div>
+        <div class="auth-choice-btn normal-choice" onclick="showNormalForm()">
+          Sign Up with Email
+        </div>
+      </div>
+      
+      <!-- Wallet section (hidden by default) -->
+      <div class="wallet-section" id="walletSection">
+        <div class="wallet-buttons">
+          <button class="wallet-btn metamask-btn" onclick="connectWallet('metamask')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask">
+            Sign up with MetaMask
+          </button>
+          <button class="wallet-btn trustwallet-btn" onclick="connectWallet('trustwallet')">
+            <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="Trust Wallet">
+            Sign up with Trust Wallet
+          </button>
+          <button class="wallet-btn binance-btn" onclick="connectWallet('binance')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/57/Binance_Logo.png" alt="Binance">
+            Sign up with Binance
+          </button>
+        </div>
+        <div class="links">
+          <a href="#" onclick="showAuthChoice()">← Back to signup options</a>
+        </div>
+      </div>
+      
+      <!-- Normal form (hidden by default) -->
+      <div class="normal-form" id="normalForm">
+        <form id="signupForm">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" required pattern="^\S+$">
+
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" required pattern="^\S+$">
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required>
+
+          <label for="Country">Country</label>
+          <input type="text" id="Country" name="Country" required>
+
+          <label for="currency">Preferred Currency</label>
+          <select id="currency" name="currency" required>
+            <option value="">Select currency</option>
+            <option value="USD">USD - US Dollar</option>
+            <option value="EUR">EUR - Euro</option>
+            <option value="JPY">JPY - Yen</option>
+          </select>
+
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+
+          <button type="submit">Register</button>
+
+          <div class="success-message" id="successMessage">Successfully Registered!</div>
+          <div class="error-message" id="errorMessage">Something went wrong. Please try again.</div>
+        </form>
+        <div class="links">
+          <a href="#" onclick="showAuthChoice()">← Back to signup options</a>
+          <a href="/Login.html">Already have an account? Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wallet connection modal -->
+  <div id="walletModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center;">
+    <div style="background-color: #2a2a2a; padding: 20px; border-radius: 6px; max-width: 350px; width: 90%; text-align: center;">
+      <h3 id="modalTitle" style="color: #1e90ff; margin-bottom: 12px; font-size: 1.1rem;">Connect Wallet</h3>
+      <div id="walletStatus" style="margin: 12px 0; padding: 10px; background-color: rgba(255,255,255,0.1); border-radius: 4px; font-size: 0.85rem;">
+        <span id="statusText">Connecting to wallet...</span>
+      </div>
+      <div id="walletAddress" style="display: none; word-break: break-all; margin: 12px 0; font-family: monospace; color: #1e90ff; font-size: 0.75rem;"></div>
+      <button id="continueBtn" style="display: none; width: 100%; padding: 8px; background-color: #1e90ff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-size: 0.85rem;" onclick="proceedAfterWalletConnect()">Continue</button>
+      <button onclick="closeWalletModal()" style="width: 100%; padding: 8px; background-color: transparent; color: #fff; border: 1px solid #444; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.85rem;">Cancel</button>
+    </div>
+  </div>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6Ty5ZHqoSA2jlyqnyi1c7HqLp6G8Ij7I&libraries=places"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@metamask/onboarding@1.0.1/dist/metamask-onboarding.bundle.js"></script>
+  
+  <script>
+    // Initialize Google Places autocomplete
+    function initAutocomplete() {
+      const input = document.getElementById('Country');
+      new google.maps.places.Autocomplete(input, { types: ['(regions)'] });
+    }
+    google.maps.event.addDomListener(window, 'load', initAutocomplete);
+
+    // Show/hide sections
+    function showAuthChoice() {
+      document.getElementById('authChoice').style.display = 'flex';
+      document.getElementById('walletSection').style.display = 'none';
+      document.getElementById('normalForm').style.display = 'none';
+    }
+
+    function showWalletOptions() {
+      document.getElementById('authChoice').style.display = 'none';
+      document.getElementById('walletSection').style.display = 'block';
+      document.getElementById('normalForm').style.display = 'none';
+      document.querySelector('.wallet-buttons').style.display = 'flex';
+    }
+
+    function showNormalForm() {
+      document.getElementById('authChoice').style.display = 'none';
+      document.getElementById('walletSection').style.display = 'none';
+      document.getElementById('normalForm').style.display = 'block';
+    }
+
+    // Original form functionality
+    const form = document.getElementById('signupForm');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      successMessage.style.display = 'block';
+      errorMessage.style.display = 'none';
+
+      setTimeout(() => {
+        successMessage.style.display = 'none';
+        form.reset();
+        window.location.href = "Dashboard.html";
+      }, 1500);
+    });
+
+    // Wallet connection functionality
+    async function connectWallet(walletType) {
+      const modal = document.getElementById('walletModal');
+      const statusText = document.getElementById('statusText');
+      const walletAddress = document.getElementById('walletAddress');
+      const continueBtn = document.getElementById('continueBtn');
+      const modalTitle = document.getElementById('modalTitle');
+      
+      // Show modal
+      modal.style.display = 'flex';
+      modalTitle.textContent = `Connect ${walletType.charAt(0).toUpperCase() + walletType.slice(1)}`;
+      statusText.innerHTML = 'Connecting to wallet...';
+      walletAddress.style.display = 'none';
+      continueBtn.style.display = 'none';
+
+      try {
+        let accounts = [];
+        
+        // Handle different wallet types
+        switch(walletType) {
+          case 'metamask':
+            accounts = await connectMetaMask();
+            break;
+          case 'trustwallet':
+            accounts = await connectTrustWallet();
+            break;
+          case 'binance':
+            accounts = await connectBinance();
+            break;
+          default:
+            throw new Error('Unknown wallet type');
+        }
+
+        if (accounts.length === 0) {
+          throw new Error('No accounts found');
+        }
+
+        // Display success
+        statusText.innerHTML = 'Connected successfully';
+        walletAddress.textContent = accounts[0];
+        walletAddress.style.display = 'block';
+        continueBtn.style.display = 'block';
+
+        // Store wallet info
+        localStorage.setItem('connectedWallet', walletType);
+        localStorage.setItem('walletAddress', accounts[0]);
+
+      } catch (error) {
+        statusText.innerHTML = error.message || 'Connection failed';
+        console.error('Wallet connection error:', error);
+      }
+    }
+
+    // MetaMask connection
+    async function connectMetaMask() {
+      if (!window.ethereum || !window.ethereum.isMetaMask) {
+        // Start MetaMask onboarding if not installed
+        const onboarding = new MetaMaskOnboarding();
+        onboarding.startOnboarding();
+        throw new Error('Please install MetaMask');
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        return accounts;
+      } catch (error) {
+        throw new Error('User rejected the request');
+      }
+    }
+
+    // Trust Wallet connection
+    async function connectTrustWallet() {
+      if (!window.ethereum || !window.ethereum.isTrust) {
+        throw new Error('Please use Trust Wallet browser or install the app');
+      }
+
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        return accounts;
+      } catch (error) {
+        throw new Error('User rejected the request');
+      }
+    }
+
+    // Binance connection
+    async function connectBinance() {
+      if (!window.BinanceChain) {
+        throw new Error('Please install Binance Chain Wallet');
+      }
+
+      try {
+        const accounts = await window.BinanceChain.request({ method: 'eth_requestAccounts' });
+        return accounts;
+      } catch (error) {
+        throw new Error('User rejected the request');
+      }
+    }
+
+    function proceedAfterWalletConnect() {
+      closeWalletModal();
+      document.getElementById('successMessage').style.display = 'block';
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1000);
+    }
+
+    function closeWalletModal() {
+      document.getElementById('walletModal').style.display = 'none';
+    }
+
+    // Initialize by showing choice buttons
+    showAuthChoice();
+  </script>
+</body>
+</html>
